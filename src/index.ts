@@ -149,6 +149,31 @@ server.tool("get_stats", "获取知识库的统计信息", {}, async () => {
 	}
 });
 
+server.tool(
+	"delete_document",
+	"根据文档的ID删除知识库中的信息",
+	{
+		document_id: z.string(),
+	},
+	async (params) => {
+		try {
+			const response = await fetch(
+				`http://localhost:8000/documents/${params.document_id}`,
+				{
+					method: "DELETE",
+				}
+			);
+			const result = await response.json();
+			return {
+				content: [{ type: "text", text: JSON.stringify(result) }],
+			};
+		} catch (error) {
+			console.error("Error deleting document:", error);
+			throw error;
+		}
+	}
+);
+
 async function main() {
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
