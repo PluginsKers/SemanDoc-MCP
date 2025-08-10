@@ -14,17 +14,6 @@ const server = new McpServer({
 	},
 });
 
-async function apiFetch(url: string, options: RequestInit = {}) {
-	const response = await fetch(url, options);
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(
-			`API request failed with status ${response.status}: ${errorText}`
-		);
-	}
-	return response.json();
-}
-
 server.tool(
 	"create_document",
 	"在知识库中创建一个新的文档。文档内容是必须的，同时可以选择性地添加元数据，如标签和分类，以便于后续的检索和管理。",
@@ -47,7 +36,7 @@ server.tool(
 	},
 	async (params) => {
 		try {
-			const result = await apiFetch(
+			const response = await fetch(
 				`${SEMANDOC_API_BASE_URL}/documents/`,
 				{
 					method: "POST",
@@ -57,6 +46,7 @@ server.tool(
 					body: JSON.stringify(params),
 				}
 			);
+			const result = await response.json();
 			return {
 				content: [{ type: "text", text: JSON.stringify(result) }],
 			};
@@ -92,7 +82,7 @@ server.tool(
 	},
 	async (params) => {
 		try {
-			const result = await apiFetch(
+			const response = await fetch(
 				`${SEMANDOC_API_BASE_URL}/documents/search/`,
 				{
 					method: "POST",
@@ -102,6 +92,7 @@ server.tool(
 					body: JSON.stringify(params),
 				}
 			);
+			const result = await response.json();
 			return {
 				content: [{ type: "text", text: JSON.stringify(result) }],
 			};
@@ -120,12 +111,13 @@ server.tool(
 	},
 	async (params) => {
 		try {
-			const result = await apiFetch(
+			const response = await fetch(
 				`${SEMANDOC_API_BASE_URL}/documents/${params.document_id}`,
 				{
 					method: "GET",
 				}
 			);
+			const result = await response.json();
 			return {
 				content: [{ type: "text", text: JSON.stringify(result) }],
 			};
@@ -161,9 +153,10 @@ server.tool(
 					url.searchParams.append(key, value.toString());
 				}
 			});
-			const result = await apiFetch(url.toString(), {
+			const response = await fetch(url.toString(), {
 				method: "GET",
 			});
+			const result = await response.json();
 			return {
 				content: [{ type: "text", text: JSON.stringify(result) }],
 			};
@@ -180,12 +173,13 @@ server.tool(
 	{},
 	async () => {
 		try {
-			const result = await apiFetch(
+			const response = await fetch(
 				`${SEMANDOC_API_BASE_URL}/documents/stats/overview`,
 				{
 					method: "GET",
 				}
 			);
+			const result = await response.json();
 			return {
 				content: [{ type: "text", text: JSON.stringify(result) }],
 			};
@@ -204,12 +198,13 @@ server.tool(
 	},
 	async (params) => {
 		try {
-			const result = await apiFetch(
+			const response = await fetch(
 				`${SEMANDOC_API_BASE_URL}/documents/${params.document_id}`,
 				{
 					method: "DELETE",
 				}
 			);
+			const result = await response.json();
 			return {
 				content: [{ type: "text", text: JSON.stringify(result) }],
 			};
