@@ -220,7 +220,7 @@ async function main() {
 	const host = args.host || "localhost";
 	const port = args.port || 17548;
 	SEMANDOC_API_BASE_URL = `http://${host}:${port}`;
-
+	console.log(SEMANDOC_API_BASE_URL);
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
 	console.error("SemanDoc MCP Server running on stdio");
