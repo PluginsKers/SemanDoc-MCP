@@ -1,9 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import minimist from "minimist";
 
-const SEMANDOC_API_BASE_URL =
-	process.env.SEMANDOC_API_BASE_URL || "http://localhost:8000";
+let SEMANDOC_API_BASE_URL: string;
 
 const server = new McpServer({
 	name: "semandoc-mcp",
@@ -216,6 +216,10 @@ server.tool(
 );
 
 async function main() {
+	const args = minimist(process.argv.slice(2));
+	SEMANDOC_API_BASE_URL =
+		args.SEMANDOC_API_BASE_URL || "http://localhost:8000";
+
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
 	console.error("SemanDoc MCP Server running on stdio");
