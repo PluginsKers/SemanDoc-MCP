@@ -217,8 +217,9 @@ server.tool(
 
 async function main() {
 	const args = minimist(process.argv.slice(2));
-	SEMANDOC_API_BASE_URL =
-		args.SEMANDOC_API_BASE_URL || "http://localhost:8000";
+	const host = args.host || "localhost";
+	const port = args.port || 17548;
+	SEMANDOC_API_BASE_URL = `http://${host}:${port}`;
 
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
